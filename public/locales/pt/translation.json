@@ -1,0 +1,18 @@
+{
+    "header": {
+        "home": "Início",
+        "about": "Sobre",
+        "skills": "Habilidades",
+        "projects": "Projetos",
+        "contact": "Contato"
+    },
+    "footer": {
+        "rights": "Todos os direitos reservados",
+        "year": "2026"
+    },
+    "common": {
+        "loading": "Carregando...",
+        "error": "Ocorreu um erro",
+        "success": "Sucesso"
+    }
+}
