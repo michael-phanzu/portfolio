@@ -2,14 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import ToggleLanguage from "@/components/ToggleLanguage";
 import ToggleMode from "../ToggleMode";
 
@@ -26,7 +18,7 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-background border-border">
+    <header className="bg-background border-border relative z-50">
       <nav className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between p-4">
           {/* Logo à gauche */}
@@ -52,56 +44,67 @@ export function Header() {
             ))}
           </div>
 
-          {/* Bloc de droite : Toggles + Burger (Sheet) */}
+          {/* Bloc de droite : Toggles + Burger */}
           <div className="flex items-center gap-2 sm:w-40 sm:justify-end">
             <ToggleMode />
             <ToggleLanguage />
 
-            {/* Bouton burger avec Sheet - visible uniquement sur mobile */}
+            {/* Bouton burger - visible uniquement sur mobile */}
             <div className="sm:hidden">
-              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-foreground hover:text-muted-foreground hover:bg-accent"
-                  >
-                    {isMenuOpen ? (
-                      <X className="h-5 w-5" />
-                    ) : (
-                      <Menu className="h-5 w-5" />
-                    )}
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="right"
-                  showCloseButton={false}
-                  className="bg-background text-foreground border-border"
-                >
-                  <SheetHeader>
-                    <SheetTitle className="sr-only">Menu</SheetTitle>
-                    <SheetDescription className="sr-only">
-                      Navigation links
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="flex flex-col space-y-2 mt-6">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className="block py-3 px-4 text-foreground hover:text-muted-foreground hover:bg-accent rounded-md transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-                  </div>
-                </SheetContent>
-              </Sheet>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-foreground hover:text-muted-foreground hover:bg-accent relative z-50"
+              >
+                {isMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </Button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Menu mobile plein écran avec animation de glisse */}
+      <div
+        className={`
+          fixed inset-0 z-40 sm:hidden
+          transform transition-transform duration-300 ease-in-out
+          ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        {/* Fond flou et transparent */}
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-md" />
+
+        {/* Contenu du menu - liens taille normale */}
+        <div className="relative h-full">
+          <div className="h-full overflow-y-auto">
+            <div className="flex flex-col items-center justify-start pt-20 px-4">
+              <div className="space-y-4 w-full max-w-sm">
+                {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="block py-2 px-4 text-center text-foreground hover:text-muted-foreground hover:bg-accent/50 rounded-md transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </a>
+                ))}
+
+                {/* Toggles dans le menu mobile */}
+                <div className="flex justify-center gap-4 pt-6">
+                  <ToggleMode />
+                  <ToggleLanguage />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }
